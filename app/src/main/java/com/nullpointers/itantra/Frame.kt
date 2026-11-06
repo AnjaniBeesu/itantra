@@ -86,7 +86,9 @@ object Frame {
         val b0 = frame[0].toInt() and 0xFF
         val plen = ((frame[2].toInt() and 0xFF) shl 8) or (frame[3].toInt() and 0xFF)
         require(frame.size - 6 == plen) { "length mismatch" }
-        val lang = VarnaCode.LANGS[(b0 shr 2) and 0xF]
+        val langIndex = (b0 shr 2) and 0xF
+        require(langIndex in VarnaCode.LANGS.indices) { "unsupported language code: $langIndex" }
+        val lang = VarnaCode.LANGS[langIndex]
         var payload = frame.copyOfRange(4, frame.size - 2)
         val ver = b0 shr 6
         var prosody: Int? = null
